@@ -8,6 +8,7 @@ public class ComputerLV1 extends Player {
 	public ComputerLV1(char playerSymbol){
 		super(playerSymbol);
 	}
+	
 	public int nextColumn(String[] gameBoard) {
 		Set<Integer> set = new HashSet<Integer>();
 		for (int i = 0; i < gameBoard.length; i++){
