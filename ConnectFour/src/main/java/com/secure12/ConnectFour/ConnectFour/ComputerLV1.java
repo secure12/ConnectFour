@@ -16,7 +16,11 @@ public class ComputerLV1 extends Player {
 				set.add(i);
 			}
 		}
-		return ((Integer[])set.toArray())[new Random().nextInt(set.size())];
+		Integer[] possibleMoves = (Integer[])set.toArray();
+		Random randomizer = new Random();
+		int move = possibleMoves[randomizer.nextInt(set.size())];
+		this.discs.add(move*6 + gameBoard[move].length());
+		return move;
 	}
 
 }
