@@ -1,3 +1,5 @@
+package com.secure12.ConnectFour.ConnectFour;
+
 import java.util.HashSet;
 
 public abstract class Player {
@@ -8,11 +10,14 @@ public abstract class Player {
 		this.playerSymbol = playerSymbol;
 		this.discs = new HashSet<Integer>();
 	}
+	
 	public char getPlayerSymbol(){
 		return this.playerSymbol;
 	};
+	
 	public HashSet<Integer> getDiscs(){
 		return this.discs;
 	};
-	abstract public int nextColumn();
+	
+	abstract public int nextColumn(String[] gameBoard);
 }
