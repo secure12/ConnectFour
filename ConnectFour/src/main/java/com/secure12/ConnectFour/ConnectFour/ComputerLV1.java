@@ -22,5 +22,19 @@ public class ComputerLV1 extends Player {
 		this.discs.add(move*6 + gameBoard[move].length());
 		return move;
 	}
-
+	
+	private int randomMove(Set<Integer> possibleMoves){
+		Integer[] possibleMovesArray = (Integer[]) possibleMoves.toArray();
+		Random randomizer = new Random();
+		return possibleMovesArray[randomizer.nextInt(possibleMoves.size())];
+	}
+	
+	private Set<Integer> possibleMoves(){
+		Set<Integer> possibleMovesSet = new HashSet<Integer>();
+		for (int i = 0; i < gameBoard.length; i++){
+			if (gameBoard[i].length() < 6){
+				possibleMovesSet.add(i);
+			}
+		}
+	}
 }
