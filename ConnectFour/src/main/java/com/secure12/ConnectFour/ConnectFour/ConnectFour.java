@@ -41,5 +41,7 @@ public class ConnectFour {
 		winDiscs = new HashSet<Integer>();
 		System.out.println("\u001B[31m a ");
 		// TODO: startGame();
+		player1.setOppo(player2);
+		player2.setOppo(player1);
 	}
 }
