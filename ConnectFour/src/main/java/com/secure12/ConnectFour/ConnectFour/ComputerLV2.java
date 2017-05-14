@@ -12,14 +12,16 @@ public class ComputerLV2 extends ComputerLV1 {
 		Set<Integer> possibleColumnsSet = possibleColumns(gameBoard);
 		for (int column: possibleColumnsSet){
 			for (int direction = 0; direction < 4; direction++){
-				if (wins(gameBoard, column, direction, this.oppo)){
+				if (wins(gameBoard, column, direction, this)){
+					this.addDisc(gameBoard, column);
 					return column;
 				}
 			}
 		}
 		for (int column: possibleColumnsSet){
 			for (int direction = 0; direction < 4; direction++){
-				if (wins(gameBoard, column, direction, this)){
+				if (wins(gameBoard, column, direction, this.oppo)){
+					this.addDisc(gameBoard, column);
 					return column;
 				}
 			}
