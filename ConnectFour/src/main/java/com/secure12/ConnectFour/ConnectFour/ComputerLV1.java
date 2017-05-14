@@ -10,24 +10,27 @@ public class ComputerLV1 extends Player {
 	}
 	
 	public int nextColumn(String[] gameBoard) {
-		int move = randomMove(gameBoard);
-		addDiscs(gameBoard, move);
-		return move;
+		int column = this.randomColumn(possibleColumns(gameBoard));
+		this.addDisc(gameBoard, column);
+		return column;
 	}
 	
-	private int randomMove(String[] gameBoard){
-		Set<Integer> possibleMovesSet = new HashSet<Integer>();
+	public Set<Integer> possibleColumns(String[] gameBoard){
+		Set<Integer> possibleColumnsSet = new HashSet<Integer>();
 		for (int i = 0; i < gameBoard.length; i++){
 			if (gameBoard[i].length() < 6){
-				possibleMovesSet.add(i);
+				possibleColumnsSet.add(i);
 			}
 		}
-		Integer[] possibleMovesArray = (Integer[]) possibleMovesSet.toArray();
+		return possibleColumnsSet;
+	}
+	protected int randomColumn(Set<Integer> possibleColumnsSet){
+		Integer[] possibleColumnsArray = (Integer[]) possibleColumnsSet.toArray();
 		Random randomizer = new Random();
-		return possibleMovesArray[randomizer.nextInt(possibleMovesSet.size())];
+		return possibleColumnsArray[randomizer.nextInt(possibleColumnsSet.size())];
 	}
 	
-	private void addDiscs(String[] gameBoard, int move){
-		this.discs.add(move*6 + gameBoard[move].length());
+	protected Boolean addDisc(String[] gameBoard, int column){
+		return this.discs.add(column*6 + gameBoard[column].length());
 	}
 }
