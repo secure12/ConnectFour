@@ -3,6 +3,7 @@ package com.secure12.ConnectFour.ConnectFour;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import java.util.List;
 
 public abstract class Player {
 	protected char playerSymbol;
@@ -26,5 +27,5 @@ public abstract class Player {
 		this.oppo = oppo;
 	}
 	
-	abstract public int nextColumn(Stack<Character>[] gameBoard);
+	abstract public int nextColumn(List<Stack<Character>> gameBoard);
 }

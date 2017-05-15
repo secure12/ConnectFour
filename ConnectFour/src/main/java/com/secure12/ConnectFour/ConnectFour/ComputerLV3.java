@@ -13,7 +13,7 @@ public class ComputerLV3 extends ComputerLV2 {
 	}
 	
 	@Override
-	public int nextColumn(Stack<Character>[] gameBoard) {
+	public int nextColumn(List<Stack<Character>> gameBoard) {
 		int col = critical(gameBoard);
 		if (col != -1)
 			return col;
@@ -24,14 +24,14 @@ public class ComputerLV3 extends ComputerLV2 {
 			insert(validColumns, column);
 		}
 		for (int column: validColumns){
-			int index = column*6 + gameBoard[column].size();
+			int index = column*6 + gameBoard.get(column).size();
 			this.discs.add(index);
-			gameBoard[column].push(this.getPlayerSymbol());
-			if (gameBoard[column].size() == 6){
+			gameBoard.get(column).push(this.getPlayerSymbol());
+			if (gameBoard.get(column).size() == 6){
 				validColumns.remove(index);
 			}
 			int temp = this.alphaBeta(gameBoard, validColumns, this.depth-1, Integer.MIN_VALUE+1, Integer.MAX_VALUE, false);
-			gameBoard[column].pop();
+			gameBoard.get(column).pop();
 			this.discs.remove(index);
 			if (!validColumns.contains(column)){
 				insert(validColumns, column);
@@ -44,7 +44,7 @@ public class ComputerLV3 extends ComputerLV2 {
 		return bestColumn;
 	}
 	
-	protected int alphaBeta(Stack<Character>[] gameBoard, List<Integer> validColumns, int depth, int alpha, int beta, Boolean myTurn){
+	protected int alphaBeta(List<Stack<Character>> gameBoard, List<Integer> validColumns, int depth, int alpha, int beta, Boolean myTurn){
 		if (depth == 0){
 			return this.heuristics_1(this);
 		}
@@ -52,10 +52,10 @@ public class ComputerLV3 extends ComputerLV2 {
 		char playerSymbol = player.getPlayerSymbol();
 		int v = (myTurn) ? Integer.MIN_VALUE+1 : Integer.MAX_VALUE;
 		for (int column: validColumns){
-			int index = column*6 + gameBoard[column].size();
+			int index = column*6 + gameBoard.get(column).size();
 			player.discs.add(index);
-			gameBoard[column].push(playerSymbol);
-			if (gameBoard[column].size() == 6){
+			gameBoard.get(column).push(playerSymbol);
+			if (gameBoard.get(column).size() == 6){
 				validColumns.remove(column);
 			}
 			int temp = this.alphaBeta(gameBoard, validColumns, depth-1, alpha, beta, !myTurn);
@@ -63,7 +63,7 @@ public class ComputerLV3 extends ComputerLV2 {
 			if (!validColumns.contains(column)){
 				insert(validColumns, column);
 			}
-			gameBoard[column].pop();
+			gameBoard.get(column).pop();
 			player.discs.remove(index);
 			if (myTurn){
 				alpha = Math.max(alpha, v);

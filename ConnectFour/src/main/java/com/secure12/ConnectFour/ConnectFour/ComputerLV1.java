@@ -4,22 +4,20 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
-
+import java.util.List;
 public class ComputerLV1 extends Player {
 	public ComputerLV1(char playerSymbol){
 		super(playerSymbol);
 	}
 	
-	public int nextColumn(Stack<Character>[] gameBoard) {
-		int column = this.randomColumn(validColumns(gameBoard));
-		this.addDisc(gameBoard, column);
-		return column;
+	public int nextColumn(List<Stack<Character>> gameBoard) {
+		return this.randomColumn(validColumns(gameBoard));
 	}
 	
-	public Set<Integer> validColumns(Stack<Character>[] gameBoard){
+	public Set<Integer> validColumns(List<Stack<Character>> gameBoard){
 		Set<Integer> validColumnsSet = new HashSet<Integer>();
-		for (int i = 0; i < gameBoard.length; i++){
-			if (gameBoard[i].size() < 6){
+		for (int i = 0; i < gameBoard.size(); i++){
+			if (gameBoard.get(i).size() < 6){
 				validColumnsSet.add(i);
 			}
 		}

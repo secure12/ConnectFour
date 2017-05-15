@@ -2,6 +2,7 @@ package com.secure12.ConnectFour.ConnectFour;
 
 import java.util.Set;
 import java.util.Stack;
+import java.util.List;
 
 public class ComputerLV2 extends ComputerLV1 {
 	public ComputerLV2(char playerSymbol){
@@ -9,27 +10,21 @@ public class ComputerLV2 extends ComputerLV1 {
 	}
 	
 	@Override
-	public int nextColumn(Stack<Character>[] gameBoard) {;
+	public int nextColumn(List<Stack<Character>> gameBoard){
 		int column = critical(gameBoard);
-		if (column == -1){
-			column = randomColumn(validColumns(gameBoard));
-		}
-		this.addDisc(gameBoard, column);
-		return column;
+		return (column == -1) ? randomColumn(validColumns(gameBoard)) : column;
 	}
 	
-	public int critical(Stack<Character>[] gameBoard){
+	public int critical(List<Stack<Character>> gameBoard){
 		Set<Integer> validColumnsSet = validColumns(gameBoard);
 		if (validColumnsSet.size() == 1){
 			int column = validColumnsSet.iterator().next();
-			this.addDisc(gameBoard, column);
 			return column;
 		}
 		else{
 			for (int column: validColumnsSet){
 				for (int direction = 0; direction < 4; direction++){
 					if (wins(gameBoard, column, direction, this)){
-						this.addDisc(gameBoard, column);
 						return column;
 					}
 				}
@@ -37,7 +32,6 @@ public class ComputerLV2 extends ComputerLV1 {
 			for (int column: validColumnsSet){
 				for (int direction = 0; direction < 4; direction++){
 					if (wins(gameBoard, column, direction, this.oppo)){
-						this.addDisc(gameBoard, column);
 						return column;
 					}
 				}
@@ -46,9 +40,9 @@ public class ComputerLV2 extends ComputerLV1 {
 		return -1;
 	}
 	
-	private Boolean wins(Stack<Character>[] gameBoard, int column, int direction, Player player){
+	private Boolean wins(List<Stack<Character>> gameBoard, int column, int direction, Player player){
 		char playerSymbol = player.getPlayerSymbol();
-		int height = gameBoard[column].size();
+		int height = gameBoard.get(column).size();
 		int count = 0;
 		int offset;
 		switch(direction){
@@ -58,22 +52,22 @@ public class ComputerLV2 extends ComputerLV1 {
 				}
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard[column].get(height + offset) == playerSymbol){
+						&& gameBoard.get(column).get(height + offset) == playerSymbol){
 					count++;
 					offset--;
 				}
 			case 1:
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard[column + offset].size() >= height + offset
-						&& gameBoard[column + offset].get(height + offset) == playerSymbol){
+						&& gameBoard.get(column + offset).size() >= height + offset
+						&& gameBoard.get(column + offset).get(height + offset) == playerSymbol){
 					count++;
 					offset--;
 				}
 				offset = 1;
 				while (column + offset < 7 
-						&& gameBoard[column + offset].size() >= height + offset 
-						&& gameBoard[column + offset].get(height + offset) == playerSymbol){
+						&& gameBoard.get(column + offset).size() >= height + offset 
+						&& gameBoard.get(column + offset).get(height + offset) == playerSymbol){
 					count++;
 					offset++;
 				}
@@ -81,15 +75,15 @@ public class ComputerLV2 extends ComputerLV1 {
 			case 2:
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard[column + offset].size() >= height
-						&& gameBoard[column + offset].get(height) == playerSymbol){
+						&& gameBoard.get(column + offset).size() >= height
+						&& gameBoard.get(column + offset).get(height) == playerSymbol){
 					count++;
 					offset--;
 				}
 				offset = 1;
 				while (column + offset < 7
-						&& gameBoard[column + offset].size() >= height
-						&& gameBoard[column + offset].get(height) == playerSymbol){
+						&& gameBoard.get(column + offset).size() >= height
+						&& gameBoard.get(column + offset).get(height) == playerSymbol){
 					count++;
 					offset++;
 				}
@@ -97,15 +91,15 @@ public class ComputerLV2 extends ComputerLV1 {
 			case 3:
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard[column + offset].size() >= height - offset
-						&& gameBoard[column + offset].get(height - offset) == playerSymbol){
+						&& gameBoard.get(column + offset).size() >= height - offset
+						&& gameBoard.get(column + offset).get(height - offset) == playerSymbol){
 					count++;
 					offset--;
 				}
 				offset = 1;
 				while (column + offset < 7
-						&& gameBoard[column + offset].size() >= height - offset
-						&& gameBoard[column + offset].get(height - offset) == playerSymbol){
+						&& gameBoard.get(column + offset).size() >= height - offset
+						&& gameBoard.get(column + offset).get(height - offset) == playerSymbol){
 					count++;
 					offset++;
 				}
