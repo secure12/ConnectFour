@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.List;
 public class ComputerLV1 extends Player {
+	
 	public ComputerLV1(char playerSymbol){
 		super(playerSymbol);
 	}
@@ -23,13 +24,10 @@ public class ComputerLV1 extends Player {
 		}
 		return validColumnsSet;
 	}
+	
 	protected int randomColumn(Set<Integer> validColumnsSet){
-		Integer[] validColumnsArray = (Integer[]) validColumnsSet.toArray();
+		Integer[] validColumnsArray = validColumnsSet.toArray(new Integer[validColumnsSet.size()]);
 		Random randomizer = new Random();
 		return validColumnsArray[randomizer.nextInt(validColumnsSet.size())];
-	}
-	
-	protected Boolean addDisc(Stack<Character>[] gameBoard, int column){
-		return this.discs.add(column*6 + gameBoard[column].size());
 	}
 }
