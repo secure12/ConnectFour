@@ -40,7 +40,7 @@ public class ComputerLV2 extends ComputerLV1 {
 		return -1;
 	}
 	
-	private Boolean wins(List<Stack<Character>> gameBoard, int column, int direction, Player player){
+	protected Boolean wins(List<Stack<Character>> gameBoard, int column, int direction, Player player){
 		char playerSymbol = player.getPlayerSymbol();
 		int height = gameBoard.get(column).size();
 		int count = 0;
@@ -51,7 +51,7 @@ public class ComputerLV2 extends ComputerLV1 {
 					return false;
 				}
 				offset = -1;
-				while (column + offset >= 0
+				while (height + offset >= 0
 						&& gameBoard.get(column).get(height + offset) == playerSymbol){
 					count++;
 					offset--;
@@ -59,14 +59,16 @@ public class ComputerLV2 extends ComputerLV1 {
 			case 1:
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard.get(column + offset).size() >= height + offset
+						&& height + offset >= 0
+						&& gameBoard.get(column + offset).size() > height + offset
 						&& gameBoard.get(column + offset).get(height + offset) == playerSymbol){
 					count++;
 					offset--;
 				}
 				offset = 1;
 				while (column + offset < 7 
-						&& gameBoard.get(column + offset).size() >= height + offset 
+						&& height + offset < 6
+						&& gameBoard.get(column + offset).size() > height + offset 
 						&& gameBoard.get(column + offset).get(height + offset) == playerSymbol){
 					count++;
 					offset++;
@@ -75,14 +77,14 @@ public class ComputerLV2 extends ComputerLV1 {
 			case 2:
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard.get(column + offset).size() >= height
+						&& gameBoard.get(column + offset).size() > height
 						&& gameBoard.get(column + offset).get(height) == playerSymbol){
 					count++;
 					offset--;
 				}
 				offset = 1;
 				while (column + offset < 7
-						&& gameBoard.get(column + offset).size() >= height
+						&& gameBoard.get(column + offset).size() > height
 						&& gameBoard.get(column + offset).get(height) == playerSymbol){
 					count++;
 					offset++;
@@ -91,14 +93,16 @@ public class ComputerLV2 extends ComputerLV1 {
 			case 3:
 				offset = -1;
 				while (column + offset >= 0
-						&& gameBoard.get(column + offset).size() >= height - offset
+						&& height - offset < 7
+						&& gameBoard.get(column + offset).size() > height - offset
 						&& gameBoard.get(column + offset).get(height - offset) == playerSymbol){
 					count++;
 					offset--;
 				}
 				offset = 1;
 				while (column + offset < 7
-						&& gameBoard.get(column + offset).size() >= height - offset
+						&& height - offset >= 0
+						&& gameBoard.get(column + offset).size() > height - offset
 						&& gameBoard.get(column + offset).get(height - offset) == playerSymbol){
 					count++;
 					offset++;
