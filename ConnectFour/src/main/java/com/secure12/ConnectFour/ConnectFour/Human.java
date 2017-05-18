@@ -9,7 +9,7 @@ public class Human extends Player{
 		super(playerSymbol);
 	}
 
-	public int nextColumn(List<Stack<Character>> gameBoard){
+	public int nextColumn(List<Stack<Character>> gameBoard) throws ArrayIndexOutOfBoundsException{
 		int column;
 		Scanner reader = new Scanner(System.in);
 		while (true){
@@ -27,10 +27,9 @@ public class Human extends Player{
 			else{
 				column--;
 				if (gameBoard.get(column).size() >= 6){
-					System.out.printf("The column [%d] is full.\n", column+1);
+					throw new ArrayIndexOutOfBoundsException(String.format("The column [%d] is full.", column+1));
 				}
 				else{
-					reader.close();
 					return column;
 				}
 			}
