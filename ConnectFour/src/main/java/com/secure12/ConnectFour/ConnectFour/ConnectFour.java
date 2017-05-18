@@ -2,8 +2,6 @@ package com.secure12.ConnectFour.ConnectFour;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -15,26 +13,43 @@ public class ConnectFour {
 	static Boolean end;
 	static Set<Integer> winDiscs;
 	static Player turn, player1, player2;
+	static int step;
 	
-	private static void printGameBoard(List<Stack<Character>> gameBoard){
+	private static void printGameBoard(){
+		System.out.println("-----------------------------");
 		System.out.println("| 1 | 2 | 3 | 4 | 5 | 6 | 7 |");
 		System.out.println("-----------------------------");
-		if (!end){
-			for (int i = 5; i >= 0; i--){
-				for (int j = 0; j < 7; j++){
-					try{
+		for (int i = 5; i >= 0; i--){
+			for (int j = 0; j < 7; j++){
+				try{
+					if (!end || !winDiscs.contains(i+6*j)){
 						System.out.printf("| %c ", gameBoard.get(j).get(i));
 					}
-					catch (ArrayIndexOutOfBoundsException e){
-						System.out.print ("|   ");
+					else{
+						System.out.printf("|%s %c %s", "\u001B[7m", gameBoard.get(j).get(i), "\u001B[0m");
 					}
 				}
-				System.out.println('|');
-				System.out.println("-----------------------------");
+				catch (ArrayIndexOutOfBoundsException e){
+					System.out.print ("|   ");
+				}
 			}
+			System.out.println('|');
+			System.out.println("-----------------------------");
 		}
-		else{
-		}
+	}
+	
+	private static void choosePlayer(){
+		player1 = choosePlayer(1);
+		player2 = choosePlayer(2);
+		player1.setOppo(player2);
+		player2.setOppo(player1);
+	}
+	
+	private static void choosePlayer(Player p1, Player p2){
+		player1 = p1;
+		player2 = p2;
+		player1.setOppo(p2);
+		player2.setOppo(p1);
 	}
 	private static Player choosePlayer(int n){
 		int index = n - 1;
@@ -72,7 +87,7 @@ public class ConnectFour {
 				return new ComputerLV2(playerSymbol);
 			case 2:
 				out.println("Computer LV 3!");
-				return new ComputerLV3(playerSymbol);
+				return new ComputerLV3(playerSymbol, 2);
 			default:
 				out.println("Human!");
 				return new Human(playerSymbol);
@@ -81,13 +96,23 @@ public class ConnectFour {
 	
 	private static int move(Player player){
 		char playerSymbol = player.getPlayerSymbol();
-		System.out.printf("Player %c's turn.\n", playerSymbol);
-		int column = player.nextColumn(gameBoard);
+		//System.out.printf("Player %c's turn.\n", playerSymbol);
+		int column;
+		while (true){
+			try{
+				column = player.nextColumn(gameBoard);
+				break;
+			}
+			catch (ArrayIndexOutOfBoundsException e){
+				System.out.println(e);
+				continue; 
+			}
+		}
+		int move = column*6 + gameBoard.get(column).size();
 		gameBoard.get(column).push(playerSymbol);
-		System.out.printf("\nPlayer %c has made the move[%d]!\n", playerSymbol, column);
-		int temp = column*6 + gameBoard.get(column).size();
-		player.discs.add(temp);
-		return temp;
+		//System.out.printf("\nPlayer %c has made the move[%d]!\n", playerSymbol, column+1);
+		player.getDiscs().add(move);
+		return move;
 	}
 	
 	private static void flipTurn(){
@@ -96,39 +121,44 @@ public class ConnectFour {
 	
 	private static Boolean checkWin(Player player, int move){
 		for (int i = 0; i < 4; i++){
-			if (wins(player, move, i)){
-				return true;
+			Set<Integer> temp = wins(player, move, i);
+			if (temp != null){
+				winDiscs.addAll(temp);
+				winDiscs.add(move);
 			}
 		}
-		return false;
+		return !winDiscs.isEmpty();
 	}
 	
-	private static Boolean wins(Player player, final int move, final int direction){
+	private static Set<Integer> wins(Player player, final int move, final int direction){
 		Set<Integer> discs = player.getDiscs();
+		Set<Integer> temp = new HashSet<Integer>();
 		int count = 0;
 		int offset;
 		switch(direction){
 			case 0:
 				if (move%6 < 3){
-					return false;
+					return null;
 				}
 				offset = -1;
 				while ((move + offset)%6 != 5
 						&& discs.contains(move+offset)){
 					count++;
+					temp.add(move + offset);
 					offset--;
-					if ((move + offset)%6 == 0) break;
 				}
+				break;
 			case 1:
 				if (move%6 - move/6 >= 3
 					|| move%6 - move/6 < -3){
-					return false;
+					return null;
 				}
 				offset = -7;
 				while ((move + offset)%6 != 5
 						&& (move + offset) >= 0
 						&& discs.contains(move + offset)){
 					count++;
+					temp.add(move + offset);
 					offset -= 7;
 				}
 				offset = 7;
@@ -136,6 +166,7 @@ public class ConnectFour {
 						&& (move + offset) < 42 
 						&& discs.contains(move + offset)){
 					count++;
+					temp.add(move + offset);
 					offset += 7;
 				}
 				break;
@@ -144,12 +175,14 @@ public class ConnectFour {
 				while ((move + offset) >= 0
 						&& discs.contains(move + offset)){
 					count++;
+					temp.add(move + offset);
 					offset -= 6;
 				}
 				offset = 6;
 				while ((move + offset) < 42
 						&& discs.contains(move + offset)){
 					count++;
+					temp.add(move + offset);
 					offset += 6;
 				}
 				break;
@@ -157,12 +190,13 @@ public class ConnectFour {
 				offset = -5;
 				if (move%6 + move/6 < 3
 					|| move%6 + move/6 >= 9){
-					return false;
+					return null;
 				}
 				while ((move + offset)%6 != 0
 						&& (move + offset) >= 0
 						&& discs.contains(move + offset)){
 					count++;
+					temp.add(move + offset);
 					offset -= 5;
 				}
 				offset = 5;
@@ -170,34 +204,85 @@ public class ConnectFour {
 						&& (move + offset) < 42
 						&& discs.contains(move + offset)){
 					count++;
+					temp.add(move + offset);
 					offset += 5;
 				}
 				break;
 			default:
 				break;
 		}
-		return (count >= 3);
+		return (count >= 3) ? temp: null;
 	}
 	
-	public static void main(String[] args){
-		gameBoard = new ArrayList<Stack<Character>>(Collections.nCopies(7, new Stack<Character>()));
-		end = false;
-		winDiscs = new HashSet<Integer>();
-		player1 = choosePlayer(1);
-		player2 = choosePlayer(2);
-		player1.setOppo(player2);
-		player2.setOppo(player1);
-		turn = player1;
-		while (!end){
-			printGameBoard(gameBoard);
+	public static void startGame(){
+		while (!end && step < 42){
+			//printGameBoard();
 			if (checkWin(turn, move(turn))){
 				end = true;
 			}
 			else{
 				flipTurn();
 			}
+			step++;
 		}
-		printGameBoard(gameBoard);
-		System.out.printf("Player %c wins the game!\n", turn.getPlayerSymbol());
+/*		printGameBoard();
+		if (step < 42){
+			System.out.printf("Player %c wins the game!\n", turn.getPlayerSymbol());
+		}
+		else{
+			System.out.println("Draw!");
+		}*/
+	}
+
+	public static void initGame(){
+		gameBoard = new ArrayList<Stack<Character>>();
+		for (int i = 0; i < 7; i++){
+			gameBoard.add(i, new Stack<Character>());
+		}
+		end = false;
+		step = 0;
+		winDiscs = new HashSet<Integer>();
+		turn = player1;
+		player1.getDiscs().clear();
+		player2.getDiscs().clear();
+	}
+	
+	public static void printResult(){
+		printGameBoard();
+		if (end){
+			System.out.printf("Player %c wins the game!\n", turn.getPlayerSymbol());
+		}
+		else{
+			if (step == 42){
+				System.out.println("Draw!");
+			}
+		}
+	}
+	
+	public static void main(String[] args){
+		/*std game:
+		 * choosePlayer();
+		initGame();
+		startGame();
+		printResult();*/
+		
+		int x=0, y=0;
+		final int games = 1000;
+		choosePlayer(new ComputerLV2('O'), new ComputerLV3('X', 2));
+		for (int i = 0; i < games; i++){
+			initGame();
+			startGame();
+			if (end){
+				if (turn == player1){
+					x++;
+				}
+				else{
+					y++;
+				}
+			}
+		}
+		System.out.printf("Player %c wins: %d\n", player1.getPlayerSymbol(), x);
+		System.out.printf("Player %c wins: %d\n", player2.getPlayerSymbol(), y);
+		System.out.printf("Draws: %d", games-x-y);
 	}
 }
