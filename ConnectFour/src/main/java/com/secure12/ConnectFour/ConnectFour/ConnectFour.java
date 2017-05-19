@@ -8,6 +8,12 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.List;
 
+/**
+ * 	This is the main class of ConnectFour project.
+ * 
+ *	@author secure12
+ *	@version v1.0
+ */
 public class ConnectFour {
 	static List<Stack<Character>> gameBoard;
 	static Boolean end;
@@ -15,6 +21,9 @@ public class ConnectFour {
 	static Player turn, player1, player2;
 	static int step;
 	
+	/**
+	 * 	A function that prints a ConnectFour game board, with inverse text in end game.
+	 */
 	private static void printGameBoard(){
 		System.out.println("-----------------------------");
 		System.out.println("| 1 | 2 | 3 | 4 | 5 | 6 | 7 |");
@@ -38,6 +47,9 @@ public class ConnectFour {
 		}
 	}
 	
+	/**
+	 * 	A function for choose players by user prompt and set the opponents for the players
+	 */
 	private static void choosePlayer(){
 		player1 = choosePlayer(1);
 		player2 = choosePlayer(2);
@@ -45,12 +57,23 @@ public class ConnectFour {
 		player2.setOppo(player1);
 	}
 	
+	/**
+	 * A function for setting players and the opponents of the players
+	 * @param p1 A Player object representing player with player symbol 'O'
+	 * @param p2 A Player object representing player with player symbol 'X'
+	 */
 	private static void choosePlayer(Player p1, Player p2){
 		player1 = p1;
 		player2 = p2;
 		player1.setOppo(p2);
 		player2.setOppo(p1);
 	}
+	
+	/**
+	 * A function for choosing the n-th player where n = 1 or 2
+	 * @param n The number of player user is going to choose, ranges from 1 to 2
+	 * @return A Player object
+	 */
 	private static Player choosePlayer(int n){
 		int index = n - 1;
 		int choice = 0;
@@ -94,9 +117,14 @@ public class ConnectFour {
 		}
 	}
 	
+	/**
+	 * A function that initiates a move for player
+	 * @param player The player object that is going to make a move
+	 * @return The index of disc that the player just made, ranges from 0 to 41
+	 */
 	private static int move(Player player){
 		char playerSymbol = player.getPlayerSymbol();
-		//System.out.printf("Player %c's turn.\n", playerSymbol);
+		System.out.printf("Player %c's turn.\n", playerSymbol);
 		int column;
 		while (true){
 			try{
@@ -110,15 +138,25 @@ public class ConnectFour {
 		}
 		int move = column*6 + gameBoard.get(column).size();
 		gameBoard.get(column).push(playerSymbol);
-		//System.out.printf("\nPlayer %c has made the move[%d]!\n", playerSymbol, column+1);
+		System.out.printf("\nPlayer %c has made the move[%d]!\n", playerSymbol, column+1);
 		player.getDiscs().add(move);
 		return move;
 	}
 	
+	/**
+	 * A function that flip the turn variable of class ConnectFour
+	 */
 	private static void flipTurn(){
 		turn = (turn == player1) ? player2: player1;
 	}
 	
+	/**
+	 * A function that checks whether player wins the round AFTER making a move
+	 * Also add move and the discs that make the win to the class variable winDiscs for printing
+	 * @param player A Player object
+	 * @param move The index of disc that the player just made, ranges from 0 to 41
+	 * @return True if wins, false otherwise
+	 */
 	private static Boolean checkWin(Player player, int move){
 		for (int i = 0; i < 4; i++){
 			Set<Integer> temp = wins(player, move, i);
@@ -130,6 +168,13 @@ public class ConnectFour {
 		return !winDiscs.isEmpty();
 	}
 	
+	/**
+	 * A function that checks whether player wins the round in a particular direction AFTER making a move
+	 * @param player A Player object
+	 * @param move The index of disc that the player just made, ranges from 0 to 41
+	 * @param direction 0 for vertical, 1 for bottom-left to upper-right, 2 for horizontal, 3 for upper-left to bottom-right, ranges from 0 to 3
+	 * @return A set of discs that make the win in that direction corresponding with parameter move, if wins; null otherwise
+	 */
 	private static Set<Integer> wins(Player player, final int move, final int direction){
 		Set<Integer> discs = player.getDiscs();
 		Set<Integer> temp = new HashSet<Integer>();
@@ -214,9 +259,12 @@ public class ConnectFour {
 		return (count >= 3) ? temp: null;
 	}
 	
+	/**
+	 * A function that starts the game by going into a loop, until either player wins or the board is filled up, i.e. step==42
+	 */
 	public static void startGame(){
 		while (!end && step < 42){
-			//printGameBoard();
+			printGameBoard();
 			if (checkWin(turn, move(turn))){
 				end = true;
 			}
@@ -225,15 +273,11 @@ public class ConnectFour {
 			}
 			step++;
 		}
-/*		printGameBoard();
-		if (step < 42){
-			System.out.printf("Player %c wins the game!\n", turn.getPlayerSymbol());
-		}
-		else{
-			System.out.println("Draw!");
-		}*/
 	}
 
+	/**
+	 * A function that resets all the related variables. player class variables are assumed to be set, so it must be called after creating players.
+	 */
 	public static void initGame(){
 		gameBoard = new ArrayList<Stack<Character>>();
 		for (int i = 0; i < 7; i++){
@@ -247,6 +291,9 @@ public class ConnectFour {
 		player2.getDiscs().clear();
 	}
 	
+	/**
+	 * A function that print the result of a game. Assumed to be called after startGame() function.
+	 */
 	public static void printResult(){
 		printGameBoard();
 		if (end){
@@ -259,13 +306,17 @@ public class ConnectFour {
 		}
 	}
 	
+	/**
+	 * The main function that controls the flow of game.
+	 * @param args Not used
+	 */
 	public static void main(String[] args){
-		/*std game:
-		 * choosePlayer();
+		choosePlayer();
 		initGame();
 		startGame();
-		printResult();*/
+		printResult();
 		
+		/*
 		int x=0, y=0;
 		final int games = 1000;
 		choosePlayer(new ComputerLV2('O'), new ComputerLV3('X', 2));
@@ -283,6 +334,6 @@ public class ConnectFour {
 		}
 		System.out.printf("Player %c wins: %d\n", player1.getPlayerSymbol(), x);
 		System.out.printf("Player %c wins: %d\n", player2.getPlayerSymbol(), y);
-		System.out.printf("Draws: %d", games-x-y);
+		System.out.printf("Draws: %d", games-x-y);*/
 	}
 }

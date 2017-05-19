@@ -5,11 +5,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+/**
+ * A more complex version of ComputerLV2
+ * @author root
+ *
+ */
 public class ComputerLV3 extends ComputerLV2 {
 	
+	// The depth of search tree going to search in alphabeta
 	private int depth;
+	
+	// The index of heuristic function that is going to be used in alphabeta
 	private int mode;
 	
+	/**
+	 * Initiates a ComputerLV3 object, setting the depth and mode as well
+	 * @param playerSymbol
+	 * @param mode
+	 */
 	public ComputerLV3(char playerSymbol, int mode){
 		super(playerSymbol);
 		this.depth = 4;
@@ -50,6 +63,16 @@ public class ComputerLV3 extends ComputerLV2 {
 		return bestColumn;
 	}
 	
+	/**
+	 * The alphabeta recursive function
+	 * @param gameBoard
+	 * @param validColumns
+	 * @param depth How many more levels of search tree that is going to be searched
+	 * @param alpha the MAX so far
+	 * @param beta the MIN so far
+	 * @param myTurn true if the level represents it is this's turn, false otherwise
+	 * @return the heuristic value of the best move under the current node.
+	 */
 	protected int alphaBeta(List<Stack<Character>> gameBoard, List<Integer> validColumns, int depth, int alpha, int beta, Boolean myTurn){
 		if (depth == 0){
 			switch(this.mode){
@@ -93,6 +116,12 @@ public class ComputerLV3 extends ComputerLV2 {
 		return v;
 	}
 	
+	/**
+	 * inserting an index of column to the List of Integer representing valid columns,
+	 * the order is fixed 3>2>4>1>5>0>6 according to the possibilities of winning
+	 * @param validColumns
+	 * @param column
+	 */
 	protected void insert(List<Integer> validColumns, int column){
 		if (column < 0 || column > 6){
 			return;
@@ -107,6 +136,10 @@ public class ComputerLV3 extends ComputerLV2 {
 		validColumns.add(index, column);
 	}
 	
+	/**
+	 * The first heuristic function, calculates how many consecutive discs player has
+	 * @return heuristic value for the current discs player has
+	 */
 	protected int heuristics_1(){
 		int h = 0;
 		Set<Integer> discs = this.getDiscs();
@@ -136,6 +169,12 @@ public class ComputerLV3 extends ComputerLV2 {
 		return h;
 	}
 	
+	/**
+	 * The second heuristic function, calculates the number of winning rows for the 2 players
+	 * addition if player himself wins, deduction if opponent wins
+	 * @param gameBoard
+	 * @return the heuristic value according to the current game state(gameBoard)
+	 */
 	protected int heuristics_2(List<Stack<Character>> gameBoard){
 		int h = 0;
 		Set<Integer> validColumnsSet = validColumns(gameBoard);
